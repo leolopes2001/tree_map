@@ -8,7 +8,7 @@ Para iniciar o projeto, siga os passos abaixo:
 
 1. **Clone o projeto.**
    
-2. **Execute o projeto no VSCode usando a extenção LiveServer**
+2. **Execute o projeto no VSCode usando a extenção LiveServer.**
 
 
 ## ⭐ Tecnologias Utilizadas 
