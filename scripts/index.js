@@ -29,6 +29,7 @@ class TreemapManager {
       this.renderConfigItems();
       this.setupResizeListener();
       this.setupSubmitFormUpdateListerner();
+      this.setupSubmitFormAddShapeListener();
     });
   }
 
@@ -82,15 +83,15 @@ class TreemapManager {
           </div>
           <div>
             <label class="form-label">Nome do refrigerante</label>
-            <input value="${item.name}" type="text" name="name[]" class="form-control" placeholder="Ex: Coca - Cola" />
+            <input value="${item.name}" type="text" required name="name[]" class="form-control" placeholder="Ex: Coca - Cola" />
           </div>
           <div>
             <label class="form-label">Vendas em Litros no Ano de 2024</label>
-            <input type="text" class="form-control" name="qty[]" value="${item.qty}" placeholder="Ex: 30000" />
+            <input type="number" class="form-control" required name="qty[]" value="${item.qty}" placeholder="Ex: 30000" />
           </div>
           <div>
             <label class="form-label">Oscilação percentual nas vendas</label>
-            <input type="text" class="form-control" value="${item.percentage}" name="percentage[]" placeholder="Ex: 10% " />
+            <input type="number" class="form-control" required value="${item.percentage}" name="percentage[]" placeholder="Ex: 10% " />
           </div>
         </li>
         `
@@ -121,6 +122,32 @@ class TreemapManager {
     }
   }
 
+  addNewShape = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const name = formData.get("name");
+    const qty = +formData.get("qty");
+    const percentage = +formData.get("percentage");
+    
+    this.dataItems = [
+      ...this.dataItems,
+      { id: crypto.randomUUID(), name, qty, percentage },
+    ];
+    e.target.reset();
+
+    this.clearCanvas();
+    this.renderTreemap();
+    this.renderConfigItems();
+
+    const container = document.querySelector(".offcanvas-body");
+
+    container.scrollTo({
+      top:container.scrollHeight,
+      left: 0,
+      behavior: "smooth",
+    });
+  };
+
   updateItems = (e) => {
     e.preventDefault();
 
@@ -132,9 +159,9 @@ class TreemapManager {
     const dataItems = [];
 
     for (let i = 0; i < names.length; i++) {
-      const itemId = e.target.querySelectorAll('input[type="hidden"]')[i].id.split(
-        "_"
-      )[0];
+      const itemId = e.target
+        .querySelectorAll('input[type="hidden"]')
+        [i].id.split("_")[0];
 
       dataItems.push({
         id: itemId,
@@ -148,12 +175,18 @@ class TreemapManager {
     this.clearCanvas();
     this.renderTreemap();
     this.renderConfigItems();
-  }
+  };
 
   setupSubmitFormUpdateListerner() {
     document
       .querySelector("#shapes_items_form")
       .addEventListener("submit", this.updateItems);
+  }
+
+  setupSubmitFormAddShapeListener() {
+    document
+      .querySelector("#addShapeForm")
+      .addEventListener("submit", this.addNewShape);
   }
 
   setupResizeListener() {
@@ -176,7 +209,7 @@ class TreemapManager {
         this.canvasElement.height = this.canvasDimensions.height;
         this.renderTreemap();
         this.renderConfigItems();
-      }, 250)
+      }, 150)
     );
   }
 }

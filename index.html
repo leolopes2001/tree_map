@@ -35,6 +35,73 @@
     </button>
 
     <div
+      class="modal fade"
+      id="addShapeModal"
+      tabindex="-1"
+      aria-labelledby="addShapeModal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="addShapeModal">
+              Adicionar Refrigerante
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form action="" class="d-flex flex-column gap-3 rounded-1 p-3" id="addShapeForm">
+                <div>
+                  <label class="form-label">Nome do refrigerante</label>
+                  <input
+                    type="text"
+                    required
+                    name="name"
+                    class="form-control"
+                    placeholder="Ex: Coca - Cola"
+                  />
+                </div>
+                <div>
+                  <label class="form-label"
+                    >Vendas em Litros no Ano de 2024</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    required
+                    name="qty"
+                    placeholder="Ex: 30000"
+                  />
+                </div>
+                <div>
+                  <label class="form-label"
+                    >Oscilação percentual nas vendas</label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    required
+                    name="percentage"
+                    placeholder="Ex: 10% "
+                  />
+                </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" data-bs-dismiss="modal"  form="addShapeForm" class="btn btn-primary">
+              Salvar alterações
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
       class="offcanvas offcanvas-end"
       tabindex="-1"
       id="offcanvasRight"
@@ -54,7 +121,7 @@
       <div class="offcanvas-body px-0">
         <form action="" id="shapes_items_form">
           <ul
-            class="list-unstyled px-4 d-flex flex-column gap-4 pb-5"
+            class="list-unstyled px-4 d-flex flex-column gap-4 pb-5 mb-5"
             id="list_items"
           ></ul>
         </form>
@@ -62,8 +129,20 @@
         <div
           class="position-absolute bottom-0 p-3 d-flex align-items-center gap-2 justify-content-center w-100 bg-white"
         >
-          <button class="btn btn-primary">Adicionar</button>
-          <button type="submit" class="btn btn-primary" form="shapes_items_form">Atualizar</button>
+          <button
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#addShapeModal"
+          >
+            Adicionar
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            form="shapes_items_form"
+          >
+            Atualizar
+          </button>
         </div>
       </div>
     </div>
