@@ -8,8 +8,7 @@ export default class Shape {
     this.height = height;
     this.width = width;
     this._radius = 0;
-    this.isVertical = width / height < 1;
-    this._lineWidth = 0;
+    this._lineWidth = 4;
   }
 
   getColorFromPercent() {

@@ -10,12 +10,12 @@ class TreemapManager {
       height: 0,
     };
     this.dataItems = [
-      { id: crypto.randomUUID(), name: "CocaCola", qty: 15000, percentage: 35 },
-      { id: crypto.randomUUID(), name: "Guaraná", qty: 5000, percentage: 7 },
-      { id: crypto.randomUUID(), name: "Sprite", qty: 2000, percentage: 70 },
-      { id: crypto.randomUUID(), name: "Jesus", qty: 1000, percentage: -7 },
-      { id: crypto.randomUUID(), name: "Pesci", qty: 4000, percentage: -70 },
-      { id: crypto.randomUUID(), name: "Fanta Uva", qty: 500, percentage: 2 },
+      { id: crypto.randomUUID(), name: "Pepsi", qty: 8000, percentage: 70 },
+      { id: crypto.randomUUID(), name: "Sprite", qty: 3000, percentage: -70 },
+      { id: crypto.randomUUID(), name: "CocaCola", qty: 1000, percentage: 95 },
+      { id: crypto.randomUUID(), name: "Guaraná Jesus", qty: 1000, percentage: -2 },
+      { id: crypto.randomUUID(), name: "Fanta Uva", qty: 800, percentage: 50 },
+      { id: crypto.randomUUID(), name: "Guaraná", qty: 500, percentage: 20 },
     ];
     this.treeMapInstance = new TreeMap();
     this.initialize();

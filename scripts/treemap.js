@@ -3,7 +3,6 @@ import Shape from "./shape.js";
 export default class TreeMap {
   constructor() {
     this._items = [];
-    this._shapes = [];
     this._totalQuantity = 0;
     this._count = 0;
     this._containerWidth = 0;
@@ -40,15 +39,12 @@ export default class TreeMap {
 
     const totalArea = containerWidth * containerHeight;
 
-    const itemRatios = [];
-
     const itemList = [...this._items];
 
-    for (let index = 0; index < this._count; index++) {
-      itemRatios.push(itemList[index].qty / this._totalQuantity);
-    }
+    const itemRatios = itemList.map((item) => item.qty / this._totalQuantity);
 
     let availableWidth = containerWidth;
+
     let availableHeight = containerHeight;
 
     for (let index = 0; index < this._count; index++) {
@@ -79,7 +75,9 @@ export default class TreeMap {
           aspectRatio: isVerticalLayout
             ? rectHeight / rectWidth
             : rectWidth / rectHeight,
-          children: [[currentItem.qty, currentItem.name , currentItem.percentage]],
+          children: [
+            [currentItem.qty, currentItem.name, currentItem.percentage],
+          ],
         };
 
         let currentAspectRatio = this.calculateAspectRatio(
@@ -87,10 +85,11 @@ export default class TreeMap {
           this.getNonZeroValue(availableHeight - rectHeight, availableHeight)
         );
 
+        // inclusão de itens
         for (let subIndex = index + 1; subIndex < this._count; subIndex++) {
           if (itemList[subIndex]) {
-            const nextItemQuantity = itemList[subIndex].qty;
 
+        
             let itemCount = subIndex - index + 1;
 
             ratioSum += itemRatios[subIndex];
@@ -105,35 +104,29 @@ export default class TreeMap {
               rectHeight = shapeDetails.height;
             }
 
+
+            // nova razão 1:1
             const currentRatio = isVerticalLayout
               ? rectHeight / rectWidth
               : rectWidth / rectHeight;
 
-            const averageRatio = (shapeDetails.aspectRatio + currentRatio) / itemCount;
+            const averageRatio =
+              (shapeDetails.aspectRatio + currentRatio) / itemCount;
 
             let isPreviousRatioBetter;
+
+            // avalia agrupamento
             if (
-              this.roundToDecimal(currentAspectRatio, 1) ===
-                this._aspectRatioGoal &&
-              this.isInRange(
-                this._aspectRatioGoal - 0.4,
-                averageRatio,
-                this._aspectRatioGoal + 0.4
-              )
+              this.roundToDecimal(currentAspectRatio, 1) === 1 &&
+              this.isInRange(0.6, averageRatio, 1.4)
             ) {
               isPreviousRatioBetter = true;
-            } else if (
-              this.roundToDecimal(shapeDetails.aspectRatio, 1) ===
-              this._aspectRatioGoal
-            ) {
+            } else if (this.roundToDecimal(shapeDetails.aspectRatio, 1) === 1) {
               isPreviousRatioBetter = true;
             } else {
-              const previousDiff = Math.abs(
-                this._aspectRatioGoal - averageRatio
-              );
-              const currentDiff = Math.abs(
-                this._aspectRatioGoal - shapeDetails.aspectRatio
-              );
+              const previousDiff = Math.abs(1 - averageRatio);
+              const currentDiff = Math.abs(1 - shapeDetails.aspectRatio);
+
               isPreviousRatioBetter = previousDiff - currentDiff > 0;
             }
 
@@ -141,6 +134,7 @@ export default class TreeMap {
               ratioSum -= itemRatios[subIndex];
               break;
             }
+            const nextItemQuantity = itemList[subIndex].qty;
 
             currentAspectRatio = this.calculateAspectRatio(
               this.getNonZeroValue(availableWidth - rectWidth, availableWidth),
@@ -158,54 +152,49 @@ export default class TreeMap {
 
             shapeDetails.value += nextItemQuantity;
 
-            shapeDetails.children.push([nextItemQuantity, itemList[subIndex].name, itemList[subIndex].percentage]);
+            shapeDetails.children.push([
+              nextItemQuantity,
+              itemList[subIndex].name,
+              itemList[subIndex].percentage,
+            ]);
 
             delete itemList[subIndex];
           }
         }
+
         let startX = containerWidth - availableWidth;
 
         let startY = containerHeight - availableHeight;
 
-        for (
-          let childIndex = 0;
-          childIndex < shapeDetails.children.length;
-          childIndex++
-        ) {
-          const child = shapeDetails.children[childIndex]
+        shapeDetails.children.forEach((child) => {
           const childValue = child[0] / shapeDetails.value;
+          const name = child[1];
+          const percent = child[2];
 
-            let childWidth;
-            let childHeight;
+          let childWidth = shapeDetails.width;
+          let childHeight = shapeDetails.height;
 
-            if (isVerticalLayout) {
-              childWidth = childValue * shapeDetails.width;
-              childHeight = shapeDetails.height;
-            } else {
-              childWidth = shapeDetails.width;
-              childHeight = childValue * shapeDetails.height;
-            }
+          if (isVerticalLayout) {
+            childWidth = childValue * shapeDetails.width;
+          } else {
+            childHeight = childValue * shapeDetails.height;
+          }
 
           const shape = new Shape(
             this._graphicsContext,
-            0,
-            0,
+            startX,
+            startY,
             childWidth,
             childHeight,
-            child[1],
-            child[2]
+            name,
+            percent
           );
-
-          shape.y = startY;
-          shape.x = startX;
 
           startY += isVerticalLayout ? 0 : childHeight;
           startX += isVerticalLayout ? childWidth : 0;
 
           shape.executeDraw();
-
-          this._shapes.push(shape);
-        }
+        });
 
         if (isVerticalLayout) {
           availableHeight -= shapeDetails.height;
